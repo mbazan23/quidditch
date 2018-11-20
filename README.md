@@ -38,7 +38,7 @@ Este threat luego se comparara con un threat que este más actualizado
 >> replay p                                                   #byexample: +timeout=10
 
 ```
-## Generamos reportes con la nueva informacion del summary
+## Generamos reportes con los summarys actualizados
 #### Borramos todos reportes antiguos
 Puede que no haya nada en la carpeta por lo tanto capturamos el mensaje que nos dice que
 la carpeta esta vacia.
