@@ -51,7 +51,7 @@ rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeo
 
 ```
 
-## Creamos los reportes nuevos
+#### Creamos los reportes nuevos
 Cuando detectamos un nuevo summary, generamos los reportes con esta nueva informacion
 Esto normalmente deberia tardar 24 hs pero adelantaremos el proceso
 
@@ -61,7 +61,7 @@ Esto normalmente deberia tardar 24 hs pero adelantaremos el proceso
 
 ```
 
-### Comprobamos que los reportes y la base de datos se actualizo
+## Comprobamos que los reportes y la base de datos se actualizaron
 Creamos una variable con el mismo threat del principio, y comprobamos que se haya actualizado la base de datos.
 Para comprobar esto, la hora de actualizacion de los threats deben ser diferentes
 
