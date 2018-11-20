@@ -48,7 +48,7 @@ the folder is empty
 Then we wait for a new summary to create a new report ...
 ```shell
 rshell> sudo rm /opt/damballa/var/stash/*
-<posible-mensaje-de-carpeta-vacia>
+<possible-message-of-empty-folder>
 rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeout=300
 
 ```
