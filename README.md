@@ -1,18 +1,17 @@
 <!--
 Load the Harness engine (Ruby)
 
->> require_relative './harness.rb'               # byexample: +pass +timeout=30
->> Harness::init_test(self, 'product' => 'csp','active_record_on' => true,'bg_noise' => true)           # byexample: +pass +timeout=30
+>> require_relative './harness.rb'                                                              # byexample: +pass +timeout=30
+>> Harness::init_test(self, 'product' => 'csp','active_record_on' => true,'bg_noise' => true)   # byexample: +pass +timeout=30
 
 >> require_relative "lib/csp/csp_stats_kiosk_helpers.rb"
 >> require_relative "lib/csp/activerecord_classes.rb"
--->
 
-```ruby
+Grab anything involving frontman for debugging
 >> add_custom_grep('/var/log/damballa', 'frontman' => 'frontman')
 
-```
-
+-->
+## Generamos un nuevo summary para actualizar la base de datos
 ### Creamos un dns lookup
 Luego lo inyectaremos para provocar un nuevo summary
 ```ruby
@@ -28,7 +27,7 @@ dshell> /config/global/summary_interval = 300
 ```
 
 ### Buscamos y guardamos el threat WDM junto con su hora de actualizacion
-Este threat luego se comparara con un threat que tenga la base de datos actualizada
+Este threat luego se comparara con un threat que este más actualizado
 ```ruby
 >> old_wdm_threat = Threat.find_by(name: 'WhiteDreamMunchkins')
 >> old_wdm_timestamp  = old_wdm_threat ? old_wdm_threat.updated_at : nil
@@ -41,7 +40,7 @@ Este threat luego se comparara con un threat que tenga la base de datos actualiz
 
 ```
 
-### Borramos todos los coldcase reports
+## Borramos todos los coldcase reports
 Esto lo hacemos para crear reportes nuevos, con la informacion actualizada
 Puede que no haya nada en la carpeta por lo tanto capturamos el mensaje que nos dice que
 la carpeta esta vacia.
@@ -54,7 +53,7 @@ rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeo
 
 ```
 
-### Generamos reportes con la nueva informacion del summary
+## Generamos reportes con la nueva informacion del summary
 Cuando detectamos un nuevo summary, generamos los reportes con esta nueva informacion
 Esto normalmente deberia tardar 24 hs pero adelantaremos el proceso
 
@@ -64,7 +63,7 @@ Esto normalmente deberia tardar 24 hs pero adelantaremos el proceso
 
 ```
 
-### Comprobamos que la base de datos se actualizo
+## Comprobamos que la base de datos se actualizo
 Creamos una variable con el mismo threat, y comprobamos que se haya actualizado la base de datos.
 Para comprobar esto, la hora de actualizacion de los threats deben ser diferentes
 
