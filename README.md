@@ -19,8 +19,7 @@ Luego lo inyectaremos para provocar un nuevo summary
 >> p.dns_lookup('jameygibson.com', '1.2.3.4')
 
 ```
-
-### Aumentamos el intervalo de los summaryes a 300
+Aumentamos el intervalo de los summaryes a 300
 ```shell
 dshell> /config/global/summary_interval = 300
 300 (Fixnum)
