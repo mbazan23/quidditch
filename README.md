@@ -12,7 +12,7 @@ Grab anything involving frontman for debugging
 
 -->
 ## Generamos un nuevo summary para actualizar la base de datos
-### Creamos un dns lookup
+#### Creamos un dns lookup
 Luego lo inyectaremos para provocar un nuevo summary
 ```ruby
 >> p = PFlow.new(Time.now, 0)
@@ -25,7 +25,7 @@ dshell> /config/global/summary_interval = 300
 300 (Fixnum)
 ```
 
-### Buscamos y guardamos el threat WDM junto con su hora de actualizacion
+#### Buscamos y guardamos el threat WDM junto con su hora de actualizacion
 Este threat luego se comparara con un threat que este más actualizado
 ```ruby
 >> old_wdm_threat = Threat.find_by(name: 'WhiteDreamMunchkins')
@@ -33,13 +33,13 @@ Este threat luego se comparara con un threat que este más actualizado
 
 ```
 
-### Inyectamos el dns loockup
+#### Inyectamos el dns loockup
 ```ruby
 >> replay p                                                   #byexample: +timeout=10
 
 ```
 ## Generamos reportes con la nueva informacion del summary
-### Borramos todos reportes antiguos
+#### Borramos todos reportes antiguos
 Puede que no haya nada en la carpeta por lo tanto capturamos el mensaje que nos dice que
 la carpeta esta vacia.
 Despues esperamos a que aparezca un nuevo summary para crear un nuevo reporte ...
@@ -61,7 +61,7 @@ Esto normalmente deberia tardar 24 hs pero adelantaremos el proceso
 
 ```
 
-## Comprobamos que los reportes y la base de datos se actualizo
+### Comprobamos que los reportes y la base de datos se actualizo
 Creamos una variable con el mismo threat del principio, y comprobamos que se haya actualizado la base de datos.
 Para comprobar esto, la hora de actualizacion de los threats deben ser diferentes
 
