@@ -1,8 +1,8 @@
 <!--
 Load the Harness engine (Ruby)
 
->> require_relative './harness.rb'      # byexample: +pass +timeout=30
->> Harness::init_test(self)             # byexample: +pass +timeout=30
+>> require_relative './harness.rb'                         # byexample: +pass +timeout=30
+>> Harness::init_test(self)                                # byexample: +pass +timeout=30
 
 >> require_relative "./lib/csp/frontman_adding_user.rb"
 >> require_relative "./lib/shared/dcon_users.rb"
@@ -13,8 +13,8 @@ $ echo $MC
 <mc-ip>
 
 Reset the users (delete any extra user from a previous test)
-dshell> expert on                               # byexample: +pass
-dshell> reset /config/global/access/users       # byexample: +pass
+dshell> expert on                                         # byexample: +pass
+dshell> reset /config/global/access/users                 # byexample: +pass
 -->
 
 
@@ -23,9 +23,9 @@ dshell> reset /config/global/access/users       # byexample: +pass
 As an administrator, an user can be created from the UI (Multiple roles selected):
 
 ```ruby
->> csp_login                    # byexample: +timeout=10
+>> csp_login                                              # byexample: +timeout=10
 >> user_multi_role = DCONUser.new(role: ['analyst','readonly'])
->> frontman_add_user(user_multi_role)      # byexample: +timeout=30
+>> frontman_add_user(user_multi_role)                     # byexample: +timeout=30
 Clicking on Setup
 Clicking on Users
 Clicking on Add
@@ -46,7 +46,7 @@ a valid password.
 We look for the user in the users configuration. Then just click in edit and click in change password:
 
 ```ruby
->> usercard = wait_until { find("#user-card-#{user_multi_role.login}") }   # byexample: +timeout=15
+>> usercard = wait_until { find("#user-card-#{user_multi_role.login}") }# byexample: +timeout=15
 >> usercard.find('a.edit-user').click # this lets us edit the user
 >> usercard.find('a.view-profile').click
 >> wait_until { find("#user_unencrypted_password") }                    # byexample: +timeout=15
@@ -77,14 +77,14 @@ We capture the username and password to use them later
 ```shell
 $ sshpass -p '<password>' \
 >         ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' \
->         <user-login>@<mc-ip>    whoami                                                  # byexample: +paste +timeout=20 +pass
+>         <user-login>@<mc-ip>    whoami                                 # byexample: +paste +timeout=20 +pass
 <user-login>
 ```
 
 <!--
 Delete all users
 
-dshell> expert on                               # byexample: -skip +pass
-dshell> reset /config/global/access/users       # byexample: -skip +pass
-dshell> expert off                              # byexample: -skip +pass
+dshell> expert on                                                        # byexample: -skip +pass
+dshell> reset /config/global/access/users                                # byexample: -skip +pass
+dshell> expert off                                                       # byexample: -skip +pass
 -->
