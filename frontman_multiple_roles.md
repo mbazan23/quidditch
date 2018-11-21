@@ -52,6 +52,7 @@ We look for the user in the users configuration. Then just click in edit and cli
 >> wait_until { find("#user_unencrypted_password") }                    # byexample: +timeout=15
 ```
 
+
 Set the password and Sign Out
 
 ```ruby
@@ -76,9 +77,8 @@ We capture the username and password to use them later
 ```shell
 $ sshpass -p '<password>' \
 >         ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' \
->         <user-login>@<mc-ip>                                                      # byexample: +paste 
-<...>
-<user-login>@<...>:/>.
+>         <user-login>@<mc-ip>    whoami                                                  # byexample: +paste +timeout=20 +pass
+<user-login>
 ```
 
 <!--
