@@ -72,7 +72,7 @@ We capture the username and password to use them later
 <password>
 -->
 
-## We connect by ssh. The prompt is displayed, indicating the successful connection
+## We connect by ssh. The user's name is displayed, indicating the successful connection
 
 ```shell
 $ sshpass -p '<password>' \
