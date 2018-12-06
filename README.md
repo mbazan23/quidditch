@@ -35,9 +35,9 @@ We create a dns lookup, and then we look for the threat WDM in the kb.
 
 ```
 
-When we inject the dns lookup, a new summary should be produced
+When we inject the dns lookup, a new summary should be produced.
 From this moment, the reports should contain the updated information
-of the new summary generated
+of the new summary generated.
 ```ruby
 >> replay p                                                   #byexample: +timeout=10
 
@@ -48,7 +48,7 @@ rshell> sudo rm /opt/damballa/var/stash/*
 rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeout=300
 
 ```
-(We force Creation of reports through the stats kiosk)
+We force Creation of reports through the stats kiosk...
 ```ruby
 >> trigger_csp_stats_kiosk_report :daily                       #byexample: +timeout=10
 >> trigger_csp_stats_kiosk_report :frontman                    #byexample: +timeout=10
