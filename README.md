@@ -14,7 +14,7 @@ Grab anything involving frontman for debugging
 -->
 
 <!--
-We increase the summary interval to 300 to have more response time
+We increase the summary interval to 300 to have more response time to see the summary
 ```shell
 dshell> /config/global/summary_interval = 300
 300 (Fixnum)
@@ -36,8 +36,6 @@ We create a dns lookup, and then we look for the threat WDM in the kb.
 ```
 
 When we inject the dns lookup, a new summary should be produced.
-From this moment, the reports should contain the updated information
-of the new summary generated.
 ```ruby
 >> replay p                                                   #byexample: +timeout=10
 
@@ -49,14 +47,16 @@ rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeo
 
 ```
 We force Creation of reports through the stats kiosk...
+From this moment, the reports should contain the updated information
+of the new summary generated.
 ```ruby
 >> trigger_csp_stats_kiosk_report :daily                       #byexample: +timeout=10
 >> trigger_csp_stats_kiosk_report :frontman                    #byexample: +timeout=10
 
 ```
-#### We checked that the reports and the database were updated
+### Verification that the reports and the database were updated.
 Now we go back to look for the threat WDM in the database.
-If the reports were updated correctly, the threat should have updated
+If the reports were generated correctly, the threat should have updated
 your date of update.
 By last we see that it really is the threat WDM through its id
 
