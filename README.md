@@ -21,7 +21,7 @@ dshell> /config/global/summary_interval = 300
 ```
 -->
 
-###     Generation of reports through stats kiosk
+##     Generation of reports through stats kiosk
 
 We create a dns lookup, and then we look for the threat WDM in the kb.
 ```ruby
@@ -54,7 +54,7 @@ of the new summary generated.
 >> trigger_csp_stats_kiosk_report :frontman                    #byexample: +timeout=10
 
 ```
-###     Verification that the reports and the database were updated.
+##     Verification that the reports and the database were updated.
 Now we go back to look for the threat WDM in the database.
 If the reports were generated correctly, the threat should have updated
 your date of update.
