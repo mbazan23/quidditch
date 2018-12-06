@@ -23,7 +23,7 @@ dshell> /config/global/summary_interval = 300
 ##     Generation of reports through stats kiosk	
 
 We create a dns lookup, and then we look for the threat WDM in the kb.	
-Later, this threat will be compared to a more up-to-date threat.
+
 ```ruby
 >> p = PFlow.new(Time.now, 0)
 >> p.dns_lookup('jameygibson.com', '1.2.3.4')
@@ -40,8 +40,6 @@ When we inject the dns lookup, a new summary should be produced.
 >> replay p                                                   #byexample: +timeout=10
 
 ```
-
-
 ```shell
 rshell> sudo rm /opt/damballa/var/stash/*
 <...>
@@ -63,6 +61,7 @@ Now we go back to look for the threat WDM in the database.
 If the reports were generated correctly, the threat should have updated
 your date of update.
 y last we see that it really is the threat WDM through its id
+
 ```ruby
 >> threat_id = wait_until(120) do                              #byexample: +timeout 120
 ..   wdm_threat        = Threat.find_by(name: 'WhiteDreamMunchkins')
@@ -75,7 +74,6 @@ y last we see that it really is the threat WDM through its id
 
 <!--
 We leave the initial interval again
-
 dshell> /config/global/summary_interval = <summary-interval>    #byexample: +paste
 <summary-interval> (Fixnum)
 
