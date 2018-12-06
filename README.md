@@ -39,7 +39,7 @@ We create a dns lookup, y luego buscamos el threat WDM en la kb.
 A partir de este momento, los reportes deberian contener la informacion actualizada
 del nuevo summary generado 
 Por eso borramos los reportes anteriores y forzamos a crear unos nuevos
-(si no deberiamos esperar 24 horas para que ocurra)
+(si no deberiamos esperar 24 horas para que se creen los nuevos reportes)
 
 ```ruby
 >> replay p                                                   #byexample: +timeout=10
