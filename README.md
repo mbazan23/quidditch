@@ -1,3 +1,4 @@
+
 <!--
 Load the Harness engine (Ruby)
 
@@ -48,7 +49,7 @@ the folder is empty
 Then we wait for a new summary to create a new report ...
 ```shell
 rshell> sudo rm /opt/damballa/var/stash/*
-<possible-message-of-empty-folder>
+<...>
 rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeout=300
 
 ```
@@ -74,7 +75,7 @@ To check this, the update time of the threats must be different
 
 ```
 
-Finally we print the threat id
+Finally we print the threat id (It should always be the same)
 ```ruby
 >>  puts threat_id
 7277
