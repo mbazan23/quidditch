@@ -23,7 +23,7 @@ dshell> /config/global/summary_interval = 300
 
 Con este test se prueba el funcionamiento de la actualizacion de la base de datos, de la creacion
 de reportes y del stats kiosk
-#### 
+
 We create a dns lookup, y luego buscamos el threat WDM en la kb. 
 ```ruby
 >> p = PFlow.new(Time.now, 0)
@@ -36,7 +36,7 @@ We create a dns lookup, y luego buscamos el threat WDM en la kb.
 
 ```
 
-#### Cuando inyectamos the dns lookup, se deberia producir un nuevo summary
+Cuando inyectamos the dns lookup, se deberia producir un nuevo summary
 A partir de este momento, los reportes deberian contener la informacion actualizada
 del nuevo summary generado 
 Por eso borramos los reportes anteriores y forzamos a crear unos nuevos
