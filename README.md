@@ -21,8 +21,8 @@ dshell> /config/global/summary_interval = 300
 ```
 -->
 
-###This test tests the operation of the database update and creation
-###of reports through the stats kiosk
+### This test tests the operation of the database update and creation
+### of reports through the stats kiosk
 
 We create a dns lookup, and then we look for the threat WDM in the kb.
 ```ruby
@@ -55,7 +55,7 @@ rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeo
 >> trigger_csp_stats_kiosk_report :frontman                    #byexample: +timeout=10
 
 ```
-####We checked that the reports and the database were updated
+#### We checked that the reports and the database were updated
 Now we go back to look for the threat WDM in the database.
 If the reports were updated correctly, the threat should have updated
 your date of update.
