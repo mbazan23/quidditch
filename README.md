@@ -21,7 +21,8 @@ dshell> /config/global/summary_interval = 300
 ```
 -->
 
-
+Con este test se prueba el funcionamiento de la actualizacion de la base de datos, de la creacion
+de reportes y del stats kiosk
 #### 
 We create a dns lookup, y luego buscamos el threat WDM en la kb. 
 ```ruby
@@ -58,9 +59,11 @@ rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeo
 
 ```
 
-## We checked that the reports and the database were updated
-Ahora volvemos a buscar el threat WDM , el cual deberia tener actualizada la fecha de actualizacion, 
-indicando la correcta actualizacion del reporte y la base de datos.
+We checked that the reports and the database were updated
+Ahora volvemos a buscar el threat WDM en la base de datos.
+Si los reportes fueron actualizados correctamente, el threat debe tener actualizada 
+su fecha de actualizacion. 
+El threat tiene que tener la fecha de de actualizacion actualizada, indicando que los reportes
 Finalmente comprobamos que realmente se trata del threat WDM a travez de su id
 
 ```ruby
