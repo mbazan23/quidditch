@@ -12,51 +12,46 @@ Grab anything involving frontman for debugging
 >> add_custom_grep('/var/log/damballa', 'frontman' => 'frontman')
 
 -->
-## We generate a new summary to update the database
 
-#### We create a dns lookup
-Then we will inject it to provoke a new summary
+<!--
+We increase the summary interval to 300 to have more response time
+```shell
+dshell> /config/global/summary_interval = 300
+300 (Fixnum)
+```
+-->
+
+
+#### 
+We create a dns lookup, y luego buscamos el threat WDM en la kb. 
 ```ruby
 >> p = PFlow.new(Time.now, 0)
 >> p.dns_lookup('jameygibson.com', '1.2.3.4')
 
 ```
-We increase the summary interval to 300
-```shell
-dshell> /config/global/summary_interval = 300
-300 (Fixnum)
-```
-
-#### We look for and keep the WDM threat along with its update time
-Later, this threat will be compared to a more up-to-date threat.
 ```ruby
 >> old_wdm_threat = Threat.find_by(name: 'WhiteDreamMunchkins')
 >> old_wdm_timestamp  = old_wdm_threat ? old_wdm_threat.updated_at : nil
 
 ```
 
-#### We injected the dns lookup
+#### Cuando inyectamos the dns lookup, se deberia producir un nuevo summary
+A partir de este momento, los reportes deberian contener la informacion actualizada
+del nuevo summary generado 
+Por eso borramos los reportes anteriores y forzamos a crear unos nuevos
+(si no deberiamos esperar 24 horas para que ocurra)
+
 ```ruby
 >> replay p                                                   #byexample: +timeout=10
 
 ```
-
-## We generate reports with updated summaries.
-
-#### We delete all old reportss
-There may not be anything in the folder so we capture the message that tells us that
-the folder is empty
-Then we wait for a new summary to create a new report ...
 ```shell
 rshell> sudo rm /opt/damballa/var/stash/*
 <...>
 rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeout=300
 
 ```
-
-#### We create new reports
-When we detect a new summary, we generate the reports with this new information.
-This normally should take 24 hours but we will accelerate the process
+(Creacion de reportes)
 ```ruby
 >> trigger_csp_stats_kiosk_report :daily                       #byexample: +timeout=10
 >> trigger_csp_stats_kiosk_report :frontman                    #byexample: +timeout=10
@@ -64,8 +59,10 @@ This normally should take 24 hours but we will accelerate the process
 ```
 
 ## We checked that the reports and the database were updated
-We create a variable with the same threat of the beginning, and verify that the database has been updated.
-To check this, the update time of the threats must be different
+Ahora volvemos a buscar el threat WDM , el cual deberia tener actualizada la fecha de actualizacion, 
+indicando la correcta actualizacion del reporte y la base de datos.
+Finalmente comprobamos que realmente se trata del threat WDM a travez de su id
+
 ```ruby
 >> threat_id = wait_until(120) do                              #byexample: +timeout 120
 ..   wdm_threat        = Threat.find_by(name: 'WhiteDreamMunchkins')
@@ -74,8 +71,6 @@ To check this, the update time of the threats must be different
 .. end
 
 ```
-
-Finally we print the threat id (It should always be the same)
 ```ruby
 >>  puts threat_id
 7277
