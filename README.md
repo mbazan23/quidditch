@@ -21,8 +21,8 @@ dshell> /config/global/summary_interval = 300
 ```
 -->
 
-Con este test se prueba el funcionamiento de la actualizacion de la base de datos, de la creacion
-de reportes y del stats kiosk
+Con este test se prueba el funcionamiento de la actualizacion de la base de datos y de la creacion
+de reportes a travez del stats kiosk
 
 We create a dns lookup, y luego buscamos el threat WDM en la kb. 
 ```ruby
@@ -39,7 +39,7 @@ We create a dns lookup, y luego buscamos el threat WDM en la kb.
 Cuando inyectamos the dns lookup, se deberia producir un nuevo summary
 A partir de este momento, los reportes deberian contener la informacion actualizada
 del nuevo summary generado 
-Por eso borramos los reportes anteriores y forzamos a crear unos nuevos
+Por eso borramos los reportes anteriores y forzamos al stats kiosk a crear unos nuevos
 (si no deberiamos esperar 24 horas para que se creen los nuevos reportes)
 
 ```ruby
