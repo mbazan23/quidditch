@@ -21,8 +21,7 @@ dshell> /config/global/summary_interval = 300
 ```
 -->
 
-### This test tests the operation of the database update and creation
-### of reports through the stats kiosk
+###  Generation of reports through stats kiosk
 
 We create a dns lookup, and then we look for the threat WDM in the kb.
 ```ruby
