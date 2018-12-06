@@ -21,10 +21,10 @@ dshell> /config/global/summary_interval = 300
 ```
 -->
 
-Con este test se prueba el funcionamiento de la actualizacion de la base de datos y de la creacion
-de reportes a travez del stats kiosk
+###This test tests the operation of the database update and creation
+###of reports through the stats kiosk
 
-We create a dns lookup, y luego buscamos el threat WDM en la kb. 
+We create a dns lookup, and then we look for the threat WDM in the kb.
 ```ruby
 >> p = PFlow.new(Time.now, 0)
 >> p.dns_lookup('jameygibson.com', '1.2.3.4')
@@ -36,12 +36,9 @@ We create a dns lookup, y luego buscamos el threat WDM en la kb.
 
 ```
 
-Cuando inyectamos the dns lookup, se deberia producir un nuevo summary
-A partir de este momento, los reportes deberian contener la informacion actualizada
-del nuevo summary generado 
-Por eso borramos los reportes anteriores y forzamos al stats kiosk a crear unos nuevos
-(si no deberiamos esperar 24 horas para que se creen los nuevos reportes)
-
+When we inject the dns lookup, a new summary should be produced
+From this moment, the reports should contain the updated information
+of the new summary generated
 ```ruby
 >> replay p                                                   #byexample: +timeout=10
 
@@ -52,19 +49,17 @@ rshell> sudo rm /opt/damballa/var/stash/*
 rshell> tail -f /var/log/damballa | grep  -q Summarizing      #byexample: +timeout=300
 
 ```
-(Creacion de reportes)
+(We force Creation of reports through the stats kiosk)
 ```ruby
 >> trigger_csp_stats_kiosk_report :daily                       #byexample: +timeout=10
 >> trigger_csp_stats_kiosk_report :frontman                    #byexample: +timeout=10
 
 ```
-
-We checked that the reports and the database were updated
-Ahora volvemos a buscar el threat WDM en la base de datos.
-Si los reportes fueron actualizados correctamente, el threat debe tener actualizada 
-su fecha de actualizacion. 
-El threat tiene que tener la fecha de de actualizacion actualizada, indicando que los reportes
-Finalmente comprobamos que realmente se trata del threat WDM a travez de su id
+####We checked that the reports and the database were updated
+Now we go back to look for the threat WDM in the database.
+If the reports were updated correctly, the threat should have updated
+your date of update.
+By last we see that it really is the threat WDM through its id
 
 ```ruby
 >> threat_id = wait_until(120) do                              #byexample: +timeout 120
