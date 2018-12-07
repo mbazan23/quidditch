@@ -1,5 +1,3 @@
-
-
 <!--
 Load the Harness engine (Ruby)
 
@@ -64,11 +62,15 @@ Sanitization
 
 >>  start_time = timestamp
 >>  basic_sanitization
+
 -->
 
+## About Splunk and Arcsight
+Both are Security Information and Event Management (SIEM), tools capable of monitoring the state in terms of security of an organization, must be perfectly integrated with all systems and must understand the behavior of the entire ICT infrastructure. Through the collection of login events, access to databases, firewall logs, proxy, IPS, application logs, etc, a SIEM is able to monitor and predict the future behavior of the ICT platform in such a way that in the face of unusual behavior of the platform can generate an alert and / or perform a certain action.
+https://www.splunk.com/es_es/products/premium-solutions/splunk-enterprise-security.html
+Note: qa-hp-1 contains a raised splunk that keeps listening
 
-
-### Seteamos la configuracion de arcsight desde  dshell
+### We set the configuration of arcsight from dshell to connect with Splunk
 
 ```shell
 dshell> expert
@@ -93,7 +95,6 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 
 
 
-
 ```ruby
 
 >> sleep 10                                                                      # byexample: +timeout=11
@@ -106,10 +107,10 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 
 ```
 
+### We injected several dns
+The dns "jameygibson.com" should contain the "WDM threat"
+The other domains should contain the threat  "Conficker.C"
 
-#### Run traffic and retrieve the events from Splunk
- Create a pflow with nxdomain and bad resolved DNS lookups, nx values from
- http://svn.atl.damballa/cgi-bin/viewvc.cgi/eng/classifiers/nxdomain/trunk/data/dsets/32/
 ```ruby
 >>  p = PFlow.new(Time.now, 0)
 >>  domains = ["afgkrwsva.biz", "afmolpiykd.cc", "andqppix.com", "aykbcmtasc.com", "ccnnbnxf.net", "dexnembbp.com", "dfooda.cc", "emolykussqu.net", "ihckxhueod.net", "ihfmkpnf.cc"]
@@ -119,10 +120,6 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 >>  p.dns_lookup(evilhost, '1.2.3.4', src_ip: '10.0.0.1', dst_ip: '10.0.0.1')   # byexample: +timeout=10
 
 ```
-
-
-
-#### Replaying nxdomain and resolved DNS lookups...
 ```ruby
 >>  replay p                                                                    # byexample: +timeout=10
 ```
