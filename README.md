@@ -108,8 +108,8 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 ```
 
 ### We injected several dns
-The dns "jameygibson.com" should contain the "WDM threat"
-The other domains should contain the threat  "Conficker.C"
+The DNS "evilhost" (jameygibson.com) should contain the "WDM threat"
+The other domains should contain the threat "Conficker.C"
 
 ```ruby
 >>  p = PFlow.new(Time.now, 0)
@@ -124,7 +124,8 @@ The other domains should contain the threat  "Conficker.C"
 >>  replay p                                                                    # byexample: +timeout=10
 ```
 
-#### Retrieve the resolved event...
+#### Consult Splunk for the DNS that contains the threat WDM
+Deberiamos recibir el evento que contiene 
 ```ruby
 >> events = wait_for_splunk_lookup(evilhost, 330)                               # byexample: +timeout=300
 Querying Splunk...
@@ -134,14 +135,7 @@ Querying Splunk...
 ```
 
 
- We save this ID so that we can search for it, that way we know that
- the events came from the same session as the unique resolved DNS lookup.
- Note the .first on events in the next paragraph, this allows the test to
- be run multiple times on the same install.  It isn't guaranteed to
- retrieve the latest event, but it will retrieve one that worked in this
- build so I feel the spirit of the test is still pure.  In an automated
- test run this won't be an issue because the test will only ever run once;
- the first event will be the only event.
+
 ```ruby
 >>  coldcase_id = events.first.match(/SP_Solution|\d+\.*|(\d+)/).captures.first
 
