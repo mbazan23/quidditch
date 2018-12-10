@@ -106,13 +106,16 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 ```
 
 ### We injected several dns
+
+The nxdomains should contain the threat "Conficker.C" Note: a DNS query can generate multiple instances of the same threat
+
 The DNS "evilhost" (jameygibson.com) should contain the "WDM threat"
-The other domains should contain the threat "Conficker.C"
+
 
 ```ruby
 >>  p = PFlow.new(Time.now, 0)
->>  domains = ["afgkrwsva.biz", "afmolpiykd.cc", "andqppix.com", "aykbcmtasc.com", "ccnnbnxf.net", "dexnembbp.com", "dfooda.cc", "emolykussqu.net", "ihckxhueod.net", "ihfmkpnf.cc"]
->>  domains.each do |domain|
+>>  nxdomains = ["afgkrwsva.biz", "afmolpiykd.cc", "andqppix.com", "aykbcmtasc.com", "ccnnbnxf.net", "dexnembbp.com", "dfooda.cc", "emolykussqu.net", "ihckxhueod.net", "ihfmkpnf.cc"]
+>>  nxdomains.each do |domain|
 ..    p.dns_lookup(domain, nil, src_ip: '10.0.0.1', dst_ip: '10.0.0.1')
 ..  end                                                                         # byexample: +timeout=20
 >>  p.dns_lookup(evilhost, '1.2.3.4', src_ip: '10.0.0.1', dst_ip: '10.0.0.1')   # byexample: +timeout=10
@@ -122,7 +125,7 @@ The other domains should contain the threat "Conficker.C"
 >>  replay p                                                                    # byexample: +timeout=10
 ```
 
-#### Consult Splunk for the DNS that contains the threat WDM
+#### Retrieve the jameygibson.com DNS event through Splunk.
 We should obtain the information of an event that contains the threat WDM, caused by the dns jameygibson.com
 ```ruby
 >> events = wait_for_splunk_lookup(evilhost, 330)                               # byexample: +timeout=300
@@ -132,17 +135,17 @@ Querying Splunk...
 <...>cs1=WhiteDreamMunchkins cs1Label=ThreatName<...>destinationDnsDomain=<...>jameygibson.com<...>src=10.0.0.1<...>
 ```
 
-#### Retrieve the nxdomain event...
-We should obtain the information of an event that contains the threat WDM, caused by the dns jameygibson.com
+#### Retrieve the nxdomain event through Splunk.
+We should obtain the information of an event that contains the threat Conficker.C, caused by a nxdomain(Non-Existent Domain)
 ```ruby
 >> events = wait_for_splunk_lookup("Conficker.C", 330)                          # byexample: +timeout=300
 Querying Splunk...
 >> add_artifact events.first, 'nxdomain-CEF-raw'
 >> events.first
-<...>cs1=Conficker.C cs1Label=ThreatName<...>DestinationDnsDomain=Non-Existent Domain<...>src=10.0.0.1<...>
+<...>cs1=Conficker.C cs1Label=ThreatName<...>destinationDnsDomain=Non-Existent Domain<...>src=10.0.0.1<...>
 ```
 
-#### reset arcsight
+### Reset arcsight configuration
 
 ```shell
 dshell> reset /config/global/integration/arcsight/destination_port
