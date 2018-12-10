@@ -1,3 +1,4 @@
+
 <!--
 Load the Harness engine (Ruby)
 
@@ -46,7 +47,7 @@ Local Methods
 ..  end
 
 >>  def wait_for_splunk_lookup(search, timeout)
-..    puts 'Querying Splunk...'
+..    log 'Querying Splunk...'
 ..    results = []
 ..
 ..    wait_until(timeout) do
@@ -64,6 +65,8 @@ Sanitization
 >>  basic_sanitization
 
 -->
+
+
 
 # About Splunk and Arcsight
 Both are Security Information and Event Management (SIEM), tools capable of monitoring the state in terms of security of an organization. Through the collection of login events, access to databases, firewall logs, proxy, IPS, application logs, etc. the platforms can generate an alert and/or perform a certain action.
@@ -93,8 +96,8 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 ```
 
 <!--
-Sanitization
->> sleep 9                                                                      # byexample: +timeout=10
+```ruby
+>>  sleep 9                                                                     # byexample: +timeout=10
 >>  evilhost = "#{start_time}.jameygibson.com"
 >>  cef_header_variables = /\|(\d+\.*)+\|\d+\|/
 >>  add_sanitization(evilhost, '[EVILHOST]')
@@ -102,6 +105,7 @@ Sanitization
 >>  add_sanitization(/end=\d+/, 'end=[TIMESTAMP]')
 >>  add_sanitization(cef_header_variables, '[|VERSION|PID|]')
 
+```
 -->
 
 ## We injected several dns
@@ -110,37 +114,36 @@ The nxdomains should contain the threat "Conficker.C" Note: a DNS query can gene
 
 The DNS "evilhost" (jameygibson.com) should contain the "WDM threat"
 
-
 ```ruby
 >>  p = PFlow.new(Time.now, 0)
->>  nxdomains = ["afgkrwsva.biz", "afmolpiykd.cc", "andqppix.com", "aykbcmtasc.com", "ccnnbnxf.net", "dexnembbp.com", "dfooda.cc", "emolykussqu.net", "ihckxhueod.net", "ihfmkpnf.cc"]
->>  nxdomains.each do |domain|
+>>  domains = ["afgkrwsva.biz", "afmolpiykd.cc", "andqppix.com", "aykbcmtasc.com", "ccnnbnxf.net", "dexnembbp.com", "dfooda.cc", "emolykussqu.net", "ihckxhueod.net", "ihfmkpnf.cc"]
+>>  domains.each do |domain|
 ..    p.dns_lookup(domain, nil, src_ip: '10.0.0.1', dst_ip: '10.0.0.1')
 ..  end                                                                         # byexample: +timeout=20
 >>  p.dns_lookup(evilhost, '1.2.3.4', src_ip: '10.0.0.1', dst_ip: '10.0.0.1')   # byexample: +timeout=10
-
-```
-```ruby
 >>  replay p                                                                    # byexample: +timeout=10
+
 ```
 
 ## Retrieve the jameygibson.com DNS event through Splunk.
 We should obtain the information of an event that contains the threat WDM, caused by the dns jameygibson.com
 ```ruby
->> events = wait_for_splunk_lookup(evilhost, 330)                               # byexample: +timeout=300
+>> events = wait_for_splunk_lookup(evilhost, 100)                               # byexample: +timeout=100
 Querying Splunk...
 >> add_artifact events, 'resolved-CEF-raw'
->> events.first
+>> puts events
 <...>cs1=WhiteDreamMunchkins cs1Label=ThreatName<...>destinationDnsDomain=<...>jameygibson.com<...>src=10.0.0.1<...>
 ```
 
+
 ## Retrieve the nxdomain event through Splunk.
 We should obtain the information of an event that contains the threat Conficker.C, caused by a nxdomain(Non-Existent Domain)
+
 ```ruby
->> events = wait_for_splunk_lookup("Conficker.C", 330)                          # byexample: +timeout=300
+>> events = wait_for_splunk_lookup(" Conficker.C", 100)           # byexample: +timeout=100
 Querying Splunk...
 >> add_artifact events.first, 'nxdomain-CEF-raw'
->> events.first
+>> puts events.first
 <...>cs1=Conficker.C cs1Label=ThreatName<...>destinationDnsDomain=Non-Existent Domain<...>src=10.0.0.1<...>
 ```
 
@@ -148,7 +151,7 @@ Querying Splunk...
 
 ```shell
 dshell> reset /config/global/integration/arcsight/destination_port
-/config/global/integration/arcsight/destination_port: <mc-siem-port> => 514       # byexample: +paste
+/config/global/integration/arcsight/destination_port: 1514 => 514
 dshell> reset /config/global/integration/arcsight/filtering/filter_by_threat
 /config/global/integration/arcsight/filtering/filter_by_threat: false => false
 dshell> reset /config/global/integration/arcsight/filtering/include_msrt
@@ -156,9 +159,10 @@ dshell> reset /config/global/integration/arcsight/filtering/include_msrt
 dshell> reset /config/global/integration/arcsight/filtering/threats
 /config/global/integration/arcsight/filtering/threats: [] => []
 dshell> reset /config/global/integration/arcsight/hostname
-/config/global/integration/arcsight/hostname: <splunk-host><...>                  # byexample: +paste
+/config/global/integration/arcsight/hostname: qa-hp-1.atl.damballa =>$
 dshell> reset /config/global/integration/arcsight/publish
 /config/global/integration/arcsight/publish: true => false
 dshell> reset /config/global/integration/arcsight/source_port
 /config/global/integration/arcsight/source_port: 65432 => 0
 ```
+
