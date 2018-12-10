@@ -92,12 +92,16 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 65432 (Fixnum)
 ```
 
-
-```ruby
->> sleep 10                                                                      # byexample: +timeout=11
+<!--
+Sanitization
+>> sleep 9                                                                      # byexample: +timeout=10
 >>  evilhost = "#{start_time}.jameygibson.com"
-
-```
+>>  cef_header_variables = /\|(\d+\.*)+\|\d+\|/
+>>  add_sanitization(evilhost, '[EVILHOST]')
+>>  add_sanitization(/start=\d+/, 'start=[TIMESTAMP]')
+>>  add_sanitization(/end=\d+/, 'end=[TIMESTAMP]')
+>>  add_sanitization(cef_header_variables, '[|VERSION|PID|]')
+-->
 
 ## We injected several dns
 
