@@ -101,6 +101,7 @@ Sanitization
 >>  add_sanitization(/start=\d+/, 'start=[TIMESTAMP]')
 >>  add_sanitization(/end=\d+/, 'end=[TIMESTAMP]')
 >>  add_sanitization(cef_header_variables, '[|VERSION|PID|]')
+
 -->
 
 ## We injected several dns
