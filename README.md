@@ -66,9 +66,9 @@ Sanitization
 -->
 
 ## About Splunk and Arcsight
-Both are Security Information and Event Management (SIEM), tools capable of monitoring the state in terms of security of an organization, must be perfectly integrated with all systems and must understand the behavior of the entire ICT infrastructure. Through the collection of login events, access to databases, firewall logs, proxy, IPS, application logs, etc, a SIEM is able to monitor and predict the future behavior of the ICT platform in such a way that in the face of unusual behavior of the platform can generate an alert and / or perform a certain action.
+Both are Security Information and Event Management (SIEM), tools capable of monitoring the state in terms of security of an organization. Through the collection of login events, access to databases, firewall logs, proxy, IPS, application logs, etc. the platform can generate an alert and/or perform a certain action.
 https://www.splunk.com/es_es/products/premium-solutions/splunk-enterprise-security.html
-Note: qa-hp-1 contains a raised splunk that keeps listening
+Note: currently qa-hp-1 contains a splunk and that's where we connect
 
 ### We set the configuration of arcsight from dshell to connect with Splunk
 
@@ -91,8 +91,6 @@ true (TrueClass)
 dshell> /config/global/integration/arcsight/source_port = 65432
 65432 (Fixnum)
 ```
-
-
 
 
 ```ruby
@@ -125,30 +123,23 @@ The other domains should contain the threat "Conficker.C"
 ```
 
 #### Consult Splunk for the DNS that contains the threat WDM
-Deberiamos recibir el evento que contiene 
+We should obtain the information of an event that contains the threat WDM, caused by the dns jameygibson.com
 ```ruby
 >> events = wait_for_splunk_lookup(evilhost, 330)                               # byexample: +timeout=300
 Querying Splunk...
 >> add_artifact events, 'resolved-CEF-raw'
->> log events
-["CEF:0|Damballa|SP Solution[|VERSION|PID|]classified_domain|8|cat=DNSQuery cnt=1 cs1=WhiteDreamMunchkins cs1Label=ThreatName cs2=Jamey DUDE cs2Label=IndustryName cs4=Multi-Purpose cs4Label=Intent cs5Label=MSThreat cs6=low cs6Label=F-SecureConfidence destinationDnsDomain=[EVILHOST] dst=1.2.3.4 dvchost=[HOST_MC] end=[TIMESTAMP] src=10.0.0.1 start=[TIMESTAMP]\nCEF:0|Damballa|SP Solution[|VERSION|PID|]classified_domain|7|cat=Domain Fluxing cnt=10 cs1=Conficker.C cs1Label=ThreatName cs2Label=IndustryName cs4=Information Stealer cs4Label=Intent cs5Label=MSThreat cs6=low cs6Label=F-SecureConfidence destinationDnsDomain=Non-Existent Domain dvchost=[HOST_MC] end=[TIMESTAMP] src=10.0.0.1 start=[TIMESTAMP]"]
+>> events.first
+<...>cs1=WhiteDreamMunchkins cs1Label=ThreatName<...>destinationDnsDomain=<...>jameygibson.com<...>src=10.0.0.1<...>
 ```
 
-
-
-```ruby
->>  coldcase_id = events.first.match(/SP_Solution|\d+\.*|(\d+)/).captures.first
-
-```
 #### Retrieve the nxdomain event...
+We should obtain the information of an event that contains the threat WDM, caused by the dns jameygibson.com
 ```ruby
->> events = wait_for_splunk_lookup("#{coldcase_id} Conficker.C", 330)           # byexample: +timeout=300
+>> events = wait_for_splunk_lookup("Conficker.C", 330)                          # byexample: +timeout=300
 Querying Splunk...
 >> add_artifact events.first, 'nxdomain-CEF-raw'
->> log events.first
-CEF:0|Damballa|SP Solution[|VERSION|PID|]classified_domain|8|cat=DNSQuery cnt=1 cs1=WhiteDreamMunchkins cs1Label=ThreatName cs2=Jamey DUDE cs2Label=IndustryName cs4=Multi-Purpose cs4Label=Intent cs5Label=MSThreat cs6=low cs6Label=F-SecureConfidence destinationDnsDomain=[EVILHOST] dst=1.2.3.4 dvchost=[HOST_MC] end=[TIMESTAMP] src=10.0.0.1 start=[TIMESTAMP]
-CEF:0|Damballa|SP Solution[|VERSION|PID|]classified_domain|7|cat=Domain Fluxing cnt=10 cs1=Conficker.C cs1Label=ThreatName cs2Label=IndustryName cs4=Information Stealer cs4Label=Intent cs5Label=MSThreat cs6=low cs6Label=F-SecureConfidence destinationDnsDomain=Non-Existent Domain dvchost=[HOST_MC] end=[TIMESTAMP] src=10.0.0.1 start=[TIMESTAMP]
-
+>> events.first
+<...>cs1=Conficker.C cs1Label=ThreatName<...>DestinationDnsDomain=Non-Existent Domain<...>src=10.0.0.1<...>
 ```
 
 #### reset arcsight
