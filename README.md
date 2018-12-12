@@ -1,94 +1,60 @@
 
+
 <!--
 Load the Harness engine (Ruby)
 
->> require_relative './harness.rb'               # byexample: +pass +timeout=30
->> Harness::init_test(self)           # byexample: +pass +timeout=30
+>> require_relative './harness.rb'                                              # byexample: +pass +timeout=30
+>> Harness::init_test(self)                                                     # byexample: +pass +timeout=30
 
+>> require 'pflow'
 >> require 'pp'
 >> require 'resolv'
->> require 'splunk-sdk-ruby'
+
+>> require_relative 'lib/csp/csp_barista/csp_barista.rb'
+>> require_relative 'harness.rb'
+>> require_relative "lib/shared/dshell_helpers.rb"
+>> require_relative "lib/shared/varys.rb"
+>> require_relative "lib/shared/debug_log.rb"
+
+-->
+
+<!--
+Sanitization and save logs of sent events
+>> basic_sanitization
+>> add_custom_grep('/var/log/damballa', 'coldcase_kiosk_logs' => 'ColdcaseKiosk')
+>> debug_log 'Setting up varys listener'
+>> varys_port = Varys.create_listener('udp')
+>> add_sanitization(varys_port.to_s, '[ARCSIGHT_DEST_PORT]')
 
 -->
 
 <!--
 Local Constants
-
->> SPLUNK_HOST = QA_HP_HELPER
->> SPLUNK_PORT = 8089
->> MC_SIEM_PORT = 1514
-
->> puts SPLUNK_HOST
-<splunk-host>
->> puts SPLUNK_PORT
-<splunk-port>
->> puts MC_SIEM_PORT
-<mc-siem-port>
-
--->
-
-<!--
-Local Methods
-
-# Given a search string for splunk, returns the result set as an array
-# of event hashes
->> def splunk_lookup(search)
-..  # connect to splunk
-..    splunk = Splunk::connect(scheme: :https,
-..                             host: SPLUNK_HOST,
-..                             port: SPLUNK_PORT,
-..                             username: 'admin',
-..                             password: 'password')
-..
-..    # Perform a oneshot search on Splunk using our search criteria
-..    stream = splunk.create_oneshot(search)
-..
-..    Splunk::ResultsReader.new(stream).each.map { |result| result['_raw'] }
-..  end
-
->>  def wait_for_splunk_lookup(search, timeout)
-..    log 'Querying Splunk...'
-..    results = []
-..
-..    wait_until(timeout) do
-..      results = splunk_lookup("search #{search}")
-..      results.empty? ? nil : results
-..    end
-..  end
-
--->
-
-<!--
-Sanitization
-
->>  start_time = timestamp
->>  basic_sanitization
+>> puts QA_HP_HELPER
+<varys-host>
+>> puts varys_port.to_i
+<varys-port>
 
 -->
 
 
 
-# About Splunk and Arcsight
-Both are Security Information and Event Management (SIEM), tools capable of monitoring the state in terms of security of an organization. Through the collection of login events, access to databases, firewall logs, proxy, IPS, application logs, etc. the platforms can generate an alert and/or perform a certain action.
-https://www.splunk.com/es_es/products/premium-solutions/splunk-enterprise-security.html
-Note: currently qa-hp-1 contains a splunk and that's where we connect
+# About Varys and Arcsight
 
-## We set the configuration of arcsight from dshell to connect with Splunk
+## We set the configuration of arcsight from dshell to connect with Varys
 
 ```shell
-dshell> expert
-Expert mode is now on.
 dshell> /config/global/summary_interval = 300
 300 (Fixnum)
-dshell> /config/global/integration/arcsight/destination_port = <mc-siem-port>    # byexample: +paste
-1514 (Fixnum)
+dshell> /config/global/integration/arcsight/destination_port = <varys-port>     # byexample: +paste
+<mc-siem-port> (Fixnum)
 dshell> /config/global/integration/arcsight/filtering/filter_by_threat = false
 false (FalseClass)
 dshell> /config/global/integration/arcsight/filtering/include_msrt = false
 false (FalseClass)
 dshell> echo > /config/global/integration/arcsight/filtering/threats
-dshell> /config/global/integration/arcsight/hostname = <splunk-host>             # byexample: +paste
-qa-hp-1.atl.damballa (String)
+dshell> /config/global/integration/arcsight/hostname = <varys-host>             # byexample: +paste
+<varys-host> (String)
 dshell> /config/global/integration/arcsight/publish = true
 true (TrueClass)
 dshell> /config/global/integration/arcsight/source_port = 65432
@@ -97,72 +63,86 @@ dshell> /config/global/integration/arcsight/source_port = 65432
 
 <!--
 ```ruby
->>  sleep 9                                                                     # byexample: +timeout=10
->>  evilhost = "#{start_time}.jameygibson.com"
->>  cef_header_variables = /\|(\d+\.*)+\|\d+\|/
->>  add_sanitization(evilhost, '[EVILHOST]')
->>  add_sanitization(/start=\d+/, 'start=[TIMESTAMP]')
->>  add_sanitization(/end=\d+/, 'end=[TIMESTAMP]')
->>  add_sanitization(cef_header_variables, '[|VERSION|PID|]')
+>>    traffic = PFlow.new(Time.now, 0)
+>>    traffic.dns_lookup('test.damballa.com',
+..                       '200.2.3.4',
+..                       src_ip: '10.2.3.4',
+..                       dst_ip: '200.3.4.5',
+..                      )
 
 ```
 -->
 
-## We injected several dns
 
-The nxdomains should contain the threat "Conficker.C" Note: a DNS query can generate multiple instances of the same threat
 
-The DNS "evilhost" (jameygibson.com) should contain the "WDM threat"
+#Obteniendo dominios
 
 ```ruby
->>  p = PFlow.new(Time.now, 0)
->>  domains = ["afgkrwsva.biz", "afmolpiykd.cc", "andqppix.com", "aykbcmtasc.com", "ccnnbnxf.net", "dexnembbp.com", "dfooda.cc", "emolykussqu.net", "ihckxhueod.net", "ihfmkpnf.cc"]
->>  domains.each do |domain|
-..    p.dns_lookup(domain, nil, src_ip: '10.0.0.1', dst_ip: '10.0.0.1')
-..  end                                                                         # byexample: +timeout=20
->>  p.dns_lookup(evilhost, '1.2.3.4', src_ip: '10.0.0.1', dst_ip: '10.0.0.1')   # byexample: +timeout=10
->>  replay p                                                                    # byexample: +timeout=10
+>>    count = 4
+>>    CSPBaristaClient.init_barista(mc['ip'],Harness.harness)                   # byexample: +timeout=30
+>>    kb_f_threats = CSPBaristaClient.f_secure_threats(mc['ip'])
+>>    types = {}
+>>    kb_f_threats.each_pair { |k,v| types[v] = CSPBaristaClient.kb_threat(mc['ip'], k) }
+
+>>    add_sanitization('cs1=Testing', 'cs1=[TESTING BOTNET]')
+>>    add_sanitization(/end=\d+/, 'end=[TIMESTAMP]')
+>>    add_sanitization(/start=\d+/, 'start=[TIMESTAMP]')
+>>    types.each_pair do |k,threat|
+..      add_sanitization("cs1=#{threat.name}", "cs1=[#{k.upcase} THREAT NAME]")
+..      add_sanitization("destinationDnsDomain=#{threat.domains[0]}", "cs1=[#{k.upcase} DOMAIN NAME]")
+..    end                                                                       # byexample: +timeout=10
+>>    types.each_pair do |k,threat|
+..       traffic.dns_lookup(threat.domains[0],
+..                         "200.2.3.#{count+=1}",
+..                         src_ip: '10.2.3.4',
+..                         dst_ip: '200.3.4.5',
+..                         )
+..    end                                                                       # byexample: +timeout=10
+
+```
+When we inject the dns lookup, a new summary should be produced.
+
+```ruby
+>>  replay traffic                                                              # byexample: +timeout=10
 
 ```
 
-## Retrieve the jameygibson.com DNS event through Splunk.
-We should obtain the information of an event that contains the threat WDM, caused by the dns jameygibson.com
+## Pull resulting event(s) from varys
 ```ruby
->> events = wait_for_splunk_lookup(evilhost, 100)                               # byexample: +timeout=100
-Querying Splunk...
->> add_artifact events, 'resolved-CEF-raw'
->> puts events
-<...>cs1=WhiteDreamMunchkins cs1Label=ThreatName<...>destinationDnsDomain=<...>jameygibson.com<...>src=10.0.0.1<...>
+>> result = []
+>> wait_until(300) do
+..   sleep 1
+..   result = Varys.fetch('udp', varys_port)
+..   result.count > 1
+.. end                                                                          # byexample: +timeout=300
+>> puts result
+<...>cs1=SevenLavaFighters cs1Label=ThreatName<...>destinationDnsDomain=ahobson.<...>.test.us dst=200.2.3.5<...>
+<...>cs1=Testing cs1Label=ThreatName<...>destinationDnsDomain=test.damballa.com dst=200.2.3.4<...>
 ```
 
 
-## Retrieve the nxdomain event through Splunk.
-We should obtain the information of an event that contains the threat Conficker.C, caused by a nxdomain(Non-Existent Domain)
 
+
+
+
+## Stopping Varys Listener and Reset arcsight configuration
 ```ruby
->> events = wait_for_splunk_lookup(" Conficker.C", 100)           # byexample: +timeout=100
-Querying Splunk...
->> add_artifact events.first, 'nxdomain-CEF-raw'
->> puts events.first
-<...>cs1=Conficker.C cs1Label=ThreatName<...>destinationDnsDomain=Non-Existent Domain<...>src=10.0.0.1<...>
+>> Varys.stop('udp', varys_port)
+
 ```
-
-## Reset arcsight configuration
-
 ```shell
 dshell> reset /config/global/integration/arcsight/destination_port
-/config/global/integration/arcsight/destination_port: 1514 => 514
+<...> => 514
 dshell> reset /config/global/integration/arcsight/filtering/filter_by_threat
 /config/global/integration/arcsight/filtering/filter_by_threat: false => false
 dshell> reset /config/global/integration/arcsight/filtering/include_msrt
 /config/global/integration/arcsight/filtering/include_msrt: false => false
 dshell> reset /config/global/integration/arcsight/filtering/threats
 /config/global/integration/arcsight/filtering/threats: [] => []
-dshell> reset /config/global/integration/arcsight/hostname
-/config/global/integration/arcsight/hostname: qa-hp-1.atl.damballa =>$
+dshell> reset /config/global/integration/arcsight/hostname                      # byexample: +paste
+/config/global/integration/arcsight/hostname: <varys-host><...>
 dshell> reset /config/global/integration/arcsight/publish
 /config/global/integration/arcsight/publish: true => false
 dshell> reset /config/global/integration/arcsight/source_port
 /config/global/integration/arcsight/source_port: 65432 => 0
 ```
-
