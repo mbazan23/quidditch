@@ -66,6 +66,13 @@ The integrations are based on the conversion of the format of events generated b
 
 * Finally, it has support for syslog, a protocol for sending registration messages in an IP computer network
 
+## How to start Varys?
+Before starting the test, it is important that Varys is active, otherwise no one will be listening to the events we send. To do this, simply go to the Varys directory and execute:
+
+rackup config.ru --port=8080 --host 0.0.0.0
+
+
+
 # How does the delivery of events to third parties work?
 
 ### STEP 1  
@@ -188,7 +195,7 @@ If the third party is activated, it converts the events contained in the Summary
 #### We Fetch Perftech Events  
 
 ```ruby
->> puts fetch_until(2,330,'tcp', perftech_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
+>> puts fetch_until(1,330,'tcp', perftech_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
 subscriber 10.2.3.4 if since 300 add policy damballaSecurityNotice set tag damballaThreat "SevenLavaFighters" set tag damballaIntent "Multi-Purpose" set tag damballaIndustryName <...> set tag damballaFSecureConfidence "<...>"
 
 ```
@@ -247,3 +254,26 @@ dshell> reset /config/global/integration/perftech/publish                       
 
 ```
 -->
+
+## What is Varys and what does it do?
+Varys is a service that receives events. A specific port opens for each connection.
+Varys stores the messages in a array, which can be accessed through a search.
+
+
+## What is SIEM?
+SIEM (security information and event management) is a technology capable of detecting, responding and neutralizing computer threats.  
+Its main objective is the global vision of the security of information technology.  
+A SIEM system allows absolute control over the company's IT security. By having information and total management on all the events  
+that happen second by second, it is easier to find trends and focus on unusual patterns.
+* The SIEMS market leaders are Arcsight, Splunk and others
+
+## More info about integrations
+
+Arcsight Integration:  
+https://wiki.atl.damballa/display/ENG/Arcsight+Integration  
+Syslog Integration :  
+https://wiki.atl.damballa/display/PM/D.+SIEM%2C+3rd+Party%2C+and+Other+Docs?preview=%2F11895583%2F15368278%2FDamballa+Failsafe+Syslog+Integration+5_2.pdf  
+PerfTech Integration :  
+https://wiki.atl.damballa/display/PM/Damballa+CSP?preview=%2F9047915%2F17596539%2FDamballa+CSP+PerfTech+Integration+Guide+2.1+v.1.1.pdf  
+D. SIEM, 3rd Party, and Other Docs:  
+https://wiki.atl.damballa/pages/viewpage.action?spaceKey=PM&title=D.+SIEM%2C+3rd+Party%2C+and+Other+Docs  
