@@ -40,7 +40,8 @@ Local Constants  (originally <varys-host> was QA_HP_HELPER)
 
 <!--
 Local methods
->> def fetch_until(time, type, port, opts = {})
+>> def fetch_until(number_of_results, time, type, port, opts = {})
+..  number_of_results = number_of_results
 ..  time = time
 ..  type = type
 ..  port = port
@@ -49,7 +50,7 @@ Local methods
 ..  wait_until(time) do
 ..    sleep 1
 ..    result = Varys.fetch(type,port, options)
-..    result.count >= 1
+..    result.count >= number_of_results
 ..  end
 .. result
 .. end                                                                          #
@@ -169,7 +170,7 @@ If the third party is activated, it converts the events contained in the Summary
 #### We Fetch ArcSight Events
 
 ```ruby
->> puts fetch_until(330,'udp', arcsight_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
+>> puts fetch_until(1,330,'udp', arcsight_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
 <...>CEF:0|Damballa|SP Solution|<...>cs1=SevenLavaFighters cs1Label=ThreatName<...>destinationDnsDomain=ahobson.<...>.test.us dst=200.2.3.5<...>
 <...>CEF:0|Damballa|SP Solution|<...>cs1=Testing cs1Label=ThreatName<...>destinationDnsDomain=test.damballa.com dst=200.2.3.4<...>
 
@@ -178,7 +179,7 @@ If the third party is activated, it converts the events contained in the Summary
 ## We Fetch Syslog Events
 
 ```ruby
->> puts fetch_until(330,'udp', syslog_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
+>> puts fetch_until(1,330,'udp', syslog_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
 <...>SP_Solution 100 DNS CEF:0|Damballa|SP Solution|<...>cs1=SevenLavaFighters cs1Label=ThreatName<...>destinationDnsDomain=ahobson.<...>.test.us dst=200.2.3.5<...>
 <...>SP_Solution 100 DNS CEF:0|Damballa|SP Solution|<...>cs1=Testing cs1Label=ThreatName<...>destinationDnsDomain=test.damballa.com dst=200.2.3.4<...>
 
@@ -187,7 +188,7 @@ If the third party is activated, it converts the events contained in the Summary
 #### We Fetch Perftech Events  
 
 ```ruby
->> puts fetch_until(330,'tcp', perftech_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
+>> puts fetch_until(2,330,'tcp', perftech_port, "ip" =>"10.81.0.81" , "port" => "8080") # byexample: +timeout=330
 subscriber 10.2.3.4 if since 300 add policy damballaSecurityNotice set tag damballaThreat "SevenLavaFighters" set tag damballaIntent "Multi-Purpose" set tag damballaIndustryName <...> set tag damballaFSecureConfidence "<...>"
 
 ```
