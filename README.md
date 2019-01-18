@@ -14,7 +14,7 @@ $ sudo docker run --rm --name freeradius -p 1812-1813:1812-1813/udp freeradius &
 Ready to process requests
 
 -->
-## Loggin through Radius Server
+## Login through Radius Server.
 
 A user who does not have a local username and password in the MC attempts to log in.
 Since the user does not exist, we will not be able to start a session.
