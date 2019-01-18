@@ -14,6 +14,7 @@ $ sudo docker run --rm --name freeradius -p 1812-1813:1812-1813/udp freeradius &
 Ready to process requests
 
 -->
+## Loggin through Radius Server
 
 A user who does not have a local username and password in the MC attempts to log in.
 Since the user does not exist, we will not be able to start a session.
@@ -32,7 +33,7 @@ Now we configure the MC so that the user can access via a Radius server that
 contains that username and password.
 
 ```shell
-10.81.0.190 is the snoopy server (http://snoopdogg.users.qa.eng.core.sec)
+10.81.0.190 is the snoopdogg server (http://snoopdogg.users.qa.eng.core.sec)
 dshell> config/global/admin/radius/primary_hostname = 10.81.0.190
 10.81.0.190 (String)
 dshell> config/global/admin/radius/primary_port = 1812
